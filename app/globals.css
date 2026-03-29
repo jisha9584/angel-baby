@@ -1,0 +1,125 @@
+/* Import fonts:
+   Martian Mono  — labels, nav, CTAs, metadata (digibouquet-style monospace)
+   Caveat        — hero name, large decorative headings (handwritten warmth)
+   Nunito        — body text, long messages (readable, rounded)             */
+@import url('https://fonts.googleapis.com/css2?family=Martian+Mono:wght@100..800&family=Caveat:wght@400;500;600;700&family=Nunito:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ─── CSS custom properties (shadcn token system) ──────────────────────────── */
+@layer base {
+  :root {
+    /* Warm cream background */
+    --background: 38 60% 97%;
+    --foreground: 25 35% 28%;
+
+    --card: 38 50% 99%;
+    --card-foreground: 25 35% 28%;
+
+    --popover: 38 50% 99%;
+    --popover-foreground: 25 35% 28%;
+
+    /* Warm amber — primary CTA colour */
+    --primary: 30 70% 55%;
+    --primary-foreground: 38 60% 99%;
+
+    /* Soft sky blue — secondary */
+    --secondary: 205 50% 88%;
+    --secondary-foreground: 25 35% 28%;
+
+    /* Muted warm grey */
+    --muted: 38 25% 93%;
+    --muted-foreground: 25 20% 52%;
+
+    /* Mint green — accent */
+    --accent: 130 35% 88%;
+    --accent-foreground: 25 35% 28%;
+
+    --destructive: 0 72% 58%;
+    --destructive-foreground: 0 0% 98%;
+
+    --border: 38 30% 88%;
+    --input:  38 30% 88%;
+    --ring:   30 70% 55%;
+
+    --radius: 1rem;
+  }
+}
+
+/* ─── Base resets ───────────────────────────────────────────────────────────── */
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-cream text-warm-brown font-body antialiased;
+    /* Subtle texture: very faint noise to give a paper-like warmth */
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E");
+  }
+}
+
+/* ─── Utility classes ───────────────────────────────────────────────────────── */
+@layer utilities {
+  /* Hero gradient that flows cream → sky → mint */
+  .bg-memory-gradient {
+    background: linear-gradient(
+      135deg,
+      #FEF7ED 0%,
+      #EDF6FF 40%,
+      #F0FBF0 70%,
+      #FEF7ED 100%
+    );
+  }
+
+  /* Classic polaroid depth */
+  .shadow-polaroid {
+    box-shadow:
+      3px  3px  6px  rgba(0, 0, 0, 0.08),
+      6px  6px  18px rgba(0, 0, 0, 0.05),
+      0    0    0  1px rgba(0, 0, 0, 0.03);
+  }
+
+  /* Soft card shadow */
+  .shadow-soft {
+    box-shadow: 0 4px 24px rgba(124, 92, 63, 0.09);
+  }
+
+  /* Lifted card on hover */
+  .shadow-hover {
+    box-shadow: 0 12px 40px rgba(124, 92, 63, 0.16);
+  }
+
+  /* Masonry layout for the memory wall */
+  .masonry {
+    columns: 1;
+    column-gap: 1.5rem;
+  }
+  @media (min-width: 640px)  { .masonry { columns: 2; } }
+  @media (min-width: 1024px) { .masonry { columns: 3; } }
+  @media (min-width: 1280px) { .masonry { columns: 4; } }
+
+  /* Prevent masonry cards from splitting across columns */
+  .masonry-item {
+    break-inside: avoid;
+    margin-bottom: 1.5rem;
+  }
+
+  /* Skeleton shimmer */
+  .skeleton {
+    background: linear-gradient(
+      90deg,
+      #f0e8df 25%,
+      #f9f3ec 50%,
+      #f0e8df 75%
+    );
+    background-size: 200% 100%;
+    animation: shimmer 1.8s ease-in-out infinite;
+  }
+}
