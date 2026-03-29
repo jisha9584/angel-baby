@@ -1,25 +1,24 @@
-# Angel Baby — In Loving Memory of Rudraksh Goyal
+# Angel Baby. In Loving Memory of Rudraksh Goyal.
 
-A living memorial website for Rudraksh Goyal (July 22, 2007 — February 13, 2026).
+A living memorial website for Rudraksh Goyal (July 22, 2007 to February 13, 2026).
 
-Built with love by his sister.
+Built by his sister, with love.
 
 ---
 
 ## What this is
 
-A warm, garden-themed memory space where friends and family can come together to share stories, photos, voice messages, and flowers for Rudraksh. Not a static memorial — a living scrapbook that grows with every person who loved him.
+I built this for my brother Rudraksh. A place where everyone who loved him can come together, share a memory, leave a photo, or just say something small. It is not meant to feel like a memorial page. It is meant to feel like him. Warm, full of people, alive.
 
 ---
 
-## Features
+## What you can do here
 
-- **Memory wall** — polaroid-style cards with photos, voice messages, and videos
-- **Bouquet builder** — pick up to 5 flowers to send alongside a memory (15 hand-drawn SVG flowers, purples dominant — his favourite colour)
-- **Quick sparks** — leave three words, a feeling, or a small truth about who he was
-- **Timeline** — key moments from his life
-- **Day counter** — tracks the days since February 13, 2026
-- **49-day tribute** — a special overlay on day 49
+- **Memory wall.** Polaroid-style cards where people can share photos, voice messages, and videos
+- **Bouquet builder.** Pick up to 5 flowers to send alongside your memory. His favourite colour was purple.
+- **Quick words.** Three words, one feeling, anything that was him
+- **Timeline.** Key moments from his life
+- **Day counter.** Tracks every day since February 13, 2026
 
 ---
 
@@ -44,13 +43,13 @@ npm run dev
 
 Open [http://localhost:3000](http://localhost:3000).
 
-The site runs without Supabase — memories just won't persist. Follow `SETUP.md` to connect a real database.
+The site runs without Supabase but nothing will save. Follow `SETUP.md` to connect a database.
 
 ---
 
 ## Personalisation
 
-All personal details live in one file:
+All personal details are in one file:
 
 ```
 config/memorial.ts
@@ -62,7 +61,7 @@ Hero photo goes in the `public/` folder.
 
 ## Deployment
 
-Deployed on [Vercel](https://vercel.com). See `SETUP.md` for the full setup guide including Supabase configuration.
+Deployed on [Vercel](https://vercel.com). See `SETUP.md` for the full setup guide including Supabase.
 
 ---
 
