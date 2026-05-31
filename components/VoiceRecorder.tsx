@@ -61,7 +61,20 @@ export default function VoiceRecorder({ onChange }: Props) {
   async function startRecording() {
     try {
       const stream   = await navigator.mediaDevices.getUserMedia({ audio: true })
-      const recorder = new MediaRecorder(stream)
+
+      // Record in a format this browser can actually produce. Safari/iOS only
+      // do mp4/aac; Chrome and Firefox do webm. mp4 is preferred because it
+      // plays back on the widest range of devices (including iPhones). The
+      // clip is then labelled with its real type, so it always plays where
+      // it's opened — the old code always claimed "webm", which broke Safari
+      // playback of its own recordings.
+      const preferred = ['audio/mp4', 'audio/webm;codecs=opus', 'audio/webm', 'audio/ogg']
+      const supported = preferred.find(
+        (t) => typeof MediaRecorder !== 'undefined' && MediaRecorder.isTypeSupported?.(t)
+      )
+      const recorder = supported
+        ? new MediaRecorder(stream, { mimeType: supported })
+        : new MediaRecorder(stream)
 
       recorder.ondataavailable = (e) => {
         if (e.data.size > 0) chunksRef.current.push(e.data)
@@ -69,7 +82,8 @@ export default function VoiceRecorder({ onChange }: Props) {
       recorder.onstop = () => {
         stream.getTracks().forEach((t) => t.stop())
         if (timerRef.current) clearInterval(timerRef.current)
-        const blob = new Blob(chunksRef.current, { type: 'audio/webm' })
+        const type = recorder.mimeType || supported || 'audio/webm'
+        const blob = new Blob(chunksRef.current, { type })
         const url  = URL.createObjectURL(blob)
         setAudioURL(url)
         onChange(blob)

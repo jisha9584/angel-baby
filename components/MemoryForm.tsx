@@ -95,7 +95,12 @@ export default function MemoryForm() {
         let videoUrl: string | null = null
 
         if (imageFile) imageUrl = await uploadDirect('photo', imageFile, imageFile.name)
-        if (voiceBlob) voiceUrl = await uploadDirect('voice', voiceBlob, 'voice-message.webm')
+        if (voiceBlob) {
+          // Extension follows the format the browser actually recorded in.
+          const t = voiceBlob.type
+          const ext = t.includes('mp4') ? 'm4a' : t.includes('ogg') ? 'ogg' : 'webm'
+          voiceUrl = await uploadDirect('voice', voiceBlob, `voice-message.${ext}`)
+        }
         if (videoFile) videoUrl = await uploadDirect('video', videoFile, videoFile.name)
 
         const fd = new FormData()
