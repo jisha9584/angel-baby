@@ -116,6 +116,10 @@ export function getFlower(id: string) {
   return FLOWERS.find((f) => f.id === id)
 }
 
+// Round trig-derived SVG coordinates so server and client serialize to the exact
+// same string — avoids last-ULP floating-point React hydration mismatches.
+const r3 = (n: number) => Math.round(n * 1000) / 1000
+
 // ─── Individual flower SVGs ────────────────────────────────────────────────────
 // Each renders into a 60×72 viewBox. The stem occupies roughly the bottom 20px,
 // and the bloom sits in the upper 52px.
@@ -124,8 +128,8 @@ function Violet({ c }: { c: Flower['colors'] }) {
   // 5 rounded petals rotated around (30,28)
   const petals = Array.from({ length: 5 }, (_, i) => {
     const angle = (i * 72 * Math.PI) / 180
-    const cx    = 30 + 13 * Math.sin(angle)
-    const cy    = 28 - 13 * Math.cos(angle)
+    const cx    = r3(30 + 13 * Math.sin(angle))
+    const cy    = r3(28 - 13 * Math.cos(angle))
     return (
       <ellipse
         key={i}
@@ -248,8 +252,8 @@ function Rose({ c }: { c: Flower['colors'] }) {
       {/* Outer petals */}
       {[0, 45, 90, 135, 180, 225, 270, 315].map((angle, i) => {
         const rad = (angle * Math.PI) / 180
-        const cx  = 30 + 16 * Math.sin(rad)
-        const cy  = 28 - 16 * Math.cos(rad)
+        const cx  = r3(30 + 16 * Math.sin(rad))
+        const cy  = r3(28 - 16 * Math.cos(rad))
         return (
           <ellipse key={i} cx={cx} cy={cy} rx={9} ry={13}
             fill={c.petal}
@@ -261,8 +265,8 @@ function Rose({ c }: { c: Flower['colors'] }) {
       {/* Mid petals */}
       {[22, 94, 166, 238, 310].map((angle, i) => {
         const rad = (angle * Math.PI) / 180
-        const cx  = 30 + 9 * Math.sin(rad)
-        const cy  = 28 - 9 * Math.cos(rad)
+        const cx  = r3(30 + 9 * Math.sin(rad))
+        const cy  = r3(28 - 9 * Math.cos(rad))
         return (
           <ellipse key={i} cx={cx} cy={cy} rx={7.5} ry={11}
             fill={c.primary}
@@ -287,8 +291,8 @@ function Daisy({ c }: { c: Flower['colors'] }) {
       {/* 12 thin petals */}
       {Array.from({ length: 12 }, (_, i) => {
         const angle = (i * 30 * Math.PI) / 180
-        const cx    = 30 + 16 * Math.sin(angle)
-        const cy    = 26 - 16 * Math.cos(angle)
+        const cx    = r3(30 + 16 * Math.sin(angle))
+        const cy    = r3(26 - 16 * Math.cos(angle))
         return (
           <ellipse key={i} cx={cx} cy={cy} rx={4} ry={9}
             fill={c.petal}
@@ -322,8 +326,8 @@ function Forgetmenot({ c }: { c: Flower['colors'] }) {
       <g>
         {[0, 72, 144, 216, 288].map((angle, i) => {
           const rad = (angle * Math.PI) / 180
-          const px  = x + 6 * Math.sin(rad)
-          const py  = y - 6 * Math.cos(rad)
+          const px  = r3(x + 6 * Math.sin(rad))
+          const py  = r3(y - 6 * Math.cos(rad))
           return (
             <ellipse key={i} cx={px} cy={py} rx={3.5} ry={5}
               fill={i % 2 === 0 ? c.primary : c.petal}
@@ -355,8 +359,8 @@ function Marigold({ c }: { c: Flower['colors'] }) {
       {/* Outer petals — 14 */}
       {Array.from({ length: 14 }, (_, i) => {
         const angle = (i * (360 / 14) * Math.PI) / 180
-        const cx    = 30 + 17 * Math.sin(angle)
-        const cy    = 27 - 17 * Math.cos(angle)
+        const cx    = r3(30 + 17 * Math.sin(angle))
+        const cy    = r3(27 - 17 * Math.cos(angle))
         return (
           <ellipse key={i} cx={cx} cy={cy} rx={5} ry={10}
             fill={c.petal}
@@ -368,8 +372,8 @@ function Marigold({ c }: { c: Flower['colors'] }) {
       {/* Inner petals — 10 */}
       {Array.from({ length: 10 }, (_, i) => {
         const angle = (i * 36 * Math.PI) / 180
-        const cx    = 30 + 10 * Math.sin(angle)
-        const cy    = 27 - 10 * Math.cos(angle)
+        const cx    = r3(30 + 10 * Math.sin(angle))
+        const cy    = r3(27 - 10 * Math.cos(angle))
         return (
           <ellipse key={i} cx={cx} cy={cy} rx={4.5} ry={8}
             fill={c.primary}
@@ -399,8 +403,8 @@ function Jasmine({ c }: { c: Flower['colors'] }) {
       <g>
         {[0, 72, 144, 216, 288].map((angle, i) => {
           const rad = (angle * Math.PI) / 180
-          const px  = x + 7 * Math.sin(rad)
-          const py  = y - 7 * Math.cos(rad)
+          const px  = r3(x + 7 * Math.sin(rad))
+          const py  = r3(y - 7 * Math.cos(rad))
           return (
             <ellipse key={i} cx={px} cy={py} rx={3} ry={5.5}
               fill={c.petal}
@@ -416,8 +420,8 @@ function Jasmine({ c }: { c: Flower['colors'] }) {
           return (
             <line key={i}
               x1={x} y1={y}
-              x2={x + 4 * Math.sin(rad)}
-              y2={y - 4 * Math.cos(rad)}
+              x2={r3(x + 4 * Math.sin(rad))}
+              y2={r3(y - 4 * Math.cos(rad))}
               stroke="#D97706" strokeWidth="0.8"
             />
           )
@@ -525,8 +529,8 @@ function Sakura({ c }: { c: Flower['colors'] }) {
     <svg viewBox="0 0 60 72" fill="none" xmlns="http://www.w3.org/2000/svg">
       {Array.from({ length: 5 }, (_, i) => {
         const angle = (i * 72 * Math.PI) / 180
-        const cx    = 30 + 14 * Math.sin(angle)
-        const cy    = 26 - 14 * Math.cos(angle)
+        const cx    = r3(30 + 14 * Math.sin(angle))
+        const cy    = r3(26 - 14 * Math.cos(angle))
         return (
           <g key={i} transform={`rotate(${i * 72}, 30, 26)`}>
             {/* Notched petal — two overlapping ellipses */}
@@ -541,8 +545,8 @@ function Sakura({ c }: { c: Flower['colors'] }) {
         return (
           <line key={i}
             x1={30} y1={26}
-            x2={30 + 7 * Math.sin(angle)}
-            y2={26 - 7 * Math.cos(angle)}
+            x2={r3(30 + 7 * Math.sin(angle))}
+            y2={r3(26 - 7 * Math.cos(angle))}
             stroke="#F59E0B" strokeWidth="0.8"
           />
         )
@@ -559,8 +563,8 @@ function Sunflower({ c }: { c: Flower['colors'] }) {
       {/* Outer petals — 16 */}
       {Array.from({ length: 16 }, (_, i) => {
         const angle = (i * (360 / 16) * Math.PI) / 180
-        const cx    = 30 + 18 * Math.sin(angle)
-        const cy    = 26 - 18 * Math.cos(angle)
+        const cx    = r3(30 + 18 * Math.sin(angle))
+        const cy    = r3(26 - 18 * Math.cos(angle))
         return (
           <ellipse key={i} cx={cx} cy={cy} rx={4} ry={9}
             fill={i % 2 === 0 ? c.primary : c.petal}
@@ -577,8 +581,8 @@ function Sunflower({ c }: { c: Flower['colors'] }) {
         const angle = (i * 30 * Math.PI) / 180
         return (
           <circle key={i}
-            cx={30 + 5 * Math.sin(angle)}
-            cy={26 - 5 * Math.cos(angle)}
+            cx={r3(30 + 5 * Math.sin(angle))}
+            cy={r3(26 - 5 * Math.cos(angle))}
             r={1} fill="#92400E" opacity="0.6"
           />
         )

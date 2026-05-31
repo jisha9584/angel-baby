@@ -1,5 +1,12 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  experimental: {
+    // Server Actions cap request bodies at 1 MB by default, which silently
+    // blocks voice recordings and video uploads. Raise it so media can post.
+    serverActions: {
+      bodySizeLimit: '50mb',
+    },
+  },
   images: {
     remotePatterns: [
       {

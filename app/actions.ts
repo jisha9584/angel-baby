@@ -2,7 +2,7 @@
 
 import { createClient } from '@supabase/supabase-js'
 import { revalidatePath } from 'next/cache'
-import type { ActionResult, Spark } from '@/types'
+import type { ActionResult, Letter, Song, Spark } from '@/types'
 
 // Returns null when env vars aren't set yet — pages degrade gracefully
 function serverSupabase() {
@@ -20,6 +20,7 @@ export async function getMemories() {
     const { data, error } = await supabase
       .from('memories')
       .select('*')
+      .is('deleted_at', null)
       .order('created_at', { ascending: false })
 
     if (error) { console.error('getMemories:', error); return [] }
@@ -92,6 +93,7 @@ export async function getSparks(): Promise<Spark[]> {
     const { data, error } = await supabase
       .from('sparks')
       .select('*')
+      .is('deleted_at', null)
       .order('created_at', { ascending: false })
 
     if (error) { console.error('getSparks:', error); return [] }
@@ -112,12 +114,101 @@ export async function createSpark(formData: FormData): Promise<ActionResult> {
   const name = (formData.get('name') as string)?.trim() || null
 
   if (!text) return { success: false, error: 'Please write something.' }
-  if (text.length > 120) return { success: false, error: 'Too long — keep it to 120 characters.' }
+  if (text.length > 120) return { success: false, error: 'Too long. Keep it to 120 characters.' }
 
   const { error } = await supabase.from('sparks').insert({ text, name })
 
   if (error) { console.error('createSpark:', error); return { success: false, error: 'Something went wrong.' } }
 
   revalidatePath('/memories')
+  return { success: true }
+}
+
+// ─── Letters ────────────────────────────────────────────────────────────────
+
+export async function getLetters(): Promise<Letter[]> {
+  try {
+    const supabase = serverSupabase()
+    if (!supabase) return []
+
+    const { data, error } = await supabase
+      .from('letters')
+      .select('*')
+      .is('deleted_at', null)
+      .order('created_at', { ascending: false })
+
+    if (error) { console.error('getLetters:', error); return [] }
+    return data ?? []
+  } catch (e) {
+    console.error('getLetters exception:', e)
+    return []
+  }
+}
+
+export async function createLetter(formData: FormData): Promise<ActionResult> {
+  const supabase = serverSupabase()
+  if (!supabase) return { success: false, error: 'Database not configured yet.' }
+
+  const name       = (formData.get('name')    as string)?.trim()
+  const message    = (formData.get('message') as string)?.trim()
+  const bouquetRaw  = (formData.get('bouquet') as string) || '[]'
+
+  if (!name || !message) return { success: false, error: 'Please fill in your name and letter.' }
+  if (message.length > 5000) return { success: false, error: 'Letter is too long (max 5000 characters).' }
+
+  let bouquet: string[] | null = null
+  try {
+    const parsed = JSON.parse(bouquetRaw)
+    if (Array.isArray(parsed) && parsed.length > 0) bouquet = parsed.slice(0, 5)
+  } catch { /* ignore malformed JSON */ }
+
+  let { error } = await supabase.from('letters').insert({ name, message, bouquet })
+  // Gracefully handle databases that don't have the bouquet column yet —
+  // the letter still sends, the flowers just aren't persisted.
+  if (error && /bouquet/i.test(error.message ?? '')) {
+    ;({ error } = await supabase.from('letters').insert({ name, message }))
+  }
+  if (error) { console.error('createLetter:', error); return { success: false, error: 'Something went wrong. Please try again.' } }
+
+  revalidatePath('/letters')
+  return { success: true }
+}
+
+// ─── Songs ──────────────────────────────────────────────────────────────────
+
+export async function getSongs(): Promise<Song[]> {
+  try {
+    const supabase = serverSupabase()
+    if (!supabase) return []
+
+    const { data, error } = await supabase
+      .from('songs')
+      .select('*')
+      .is('deleted_at', null)
+      .order('created_at', { ascending: false })
+
+    if (error) { console.error('getSongs:', error); return [] }
+    return data ?? []
+  } catch (e) {
+    console.error('getSongs exception:', e)
+    return []
+  }
+}
+
+export async function createSong(formData: FormData): Promise<ActionResult> {
+  const supabase = serverSupabase()
+  if (!supabase) return { success: false, error: 'Database not configured yet.' }
+
+  const title        = (formData.get('title')        as string)?.trim()
+  const artist       = (formData.get('artist')       as string)?.trim()
+  const note         = (formData.get('note')         as string)?.trim() || null
+  const submitted_by = (formData.get('submitted_by') as string)?.trim() || null
+
+  if (!title || !artist) return { success: false, error: 'Please provide the song title and artist.' }
+
+  const { error } = await supabase.from('songs').insert({ title, artist, note, submitted_by })
+  if (error) { console.error('createSong:', error); return { success: false, error: 'Something went wrong. Please try again.' } }
+
+  revalidatePath('/music')
   return { success: true }
 }

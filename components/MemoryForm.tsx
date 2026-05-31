@@ -262,7 +262,7 @@ export default function MemoryForm() {
             pick flowers to send alongside your memory. his favourite colour was purple.
           </p>
         </div>
-        <FlowerPicker selected={bouquet} onChange={setBouquet} />
+        <FlowerPicker selected={bouquet} onChange={setBouquet} variant="memory" />
       </div>
 
       {/* Media */}

@@ -16,14 +16,19 @@ const config: Config = {
     extend: {
       // ─── Palette ────────────────────────────────────────────────────────
       colors: {
-        cream:        '#FEF7ED',
-        'warm-yellow':'#F9E4B7',
-        'soft-blue':  '#C5DAED',
-        'mint-green': '#C8E6C9',
-        blush:        '#F4C2C2',
-        'warm-brown': '#7C5C3F',
-        'light-brown':'#A0856A',
-        'card-bg':    '#FFFDF7',
+        cream:         '#F7F1E5',
+        'warm-yellow': '#F9E4B7',
+        'soft-blue':   '#C5DAED',
+        'mint-green':  '#C8E6C9',
+        blush:         '#F4C2C2',
+        'warm-brown':  '#7C5C3F',
+        'light-brown': '#A0856A',
+        'card-bg':     '#FFFDF7',
+        // Night sky palette
+        'night-sky':    '#0B0A1A',
+        'night-purple': '#180028',
+        'star-purple':  '#C4B5FD',
+        'sky-lavender': '#E9D5FF',
         // shadcn CSS-variable tokens
         border:     'hsl(var(--border))',
         input:      'hsl(var(--input))',
@@ -97,6 +102,17 @@ const config: Config = {
           '0%':   { backgroundPosition: '-200% center' },
           '100%': { backgroundPosition:  '200% center' },
         },
+        'petal-fall': {
+          '0%':   { transform: 'translateY(-30px) rotate(0deg)',    opacity: '0' },
+          '8%':   { opacity: '0.85' },
+          '90%':  { opacity: '0.5' },
+          '100%': { transform: 'translateY(110vh) rotate(420deg)', opacity: '0' },
+        },
+        'candle-flicker': {
+          '0%, 100%': { transform: 'scaleY(1)    scaleX(1)',     opacity: '1' },
+          '33%':      { transform: 'scaleY(1.06) scaleX(0.94)', opacity: '0.88' },
+          '66%':      { transform: 'scaleY(0.96) scaleX(1.04)', opacity: '0.95' },
+        },
       },
 
       // ─── Animation shortcuts ────────────────────────────────────────────
@@ -108,6 +124,8 @@ const config: Config = {
         'fade-in-up':     'fade-in-up 0.6s ease-out forwards',
         'soft-pulse':     'soft-pulse 2.5s ease-in-out infinite',
         shimmer:          'shimmer 2s linear infinite',
+        'petal-fall':     'petal-fall 9s ease-in infinite',
+        'candle-flicker': 'candle-flicker 2.2s ease-in-out infinite',
       },
 
       // ─── Box shadows ────────────────────────────────────────────────────

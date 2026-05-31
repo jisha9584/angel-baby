@@ -12,7 +12,7 @@ export default async function MemoriesPage() {
   const [memories, sparks] = await Promise.all([getMemories(), getSparks()])
 
   return (
-    <div className="min-h-screen">
+    <div className="paper-grain min-h-screen">
 
       <section className="px-4 py-14 text-center">
         <div className="max-w-xl mx-auto">

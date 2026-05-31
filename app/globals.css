@@ -122,4 +122,91 @@
     background-size: 200% 100%;
     animation: shimmer 1.8s ease-in-out infinite;
   }
+
+  /* ─── Night sky hero background ─────────────────────────────────────────── */
+  .hero-sky {
+    background:
+      radial-gradient(ellipse 85% 65% at 50% 30%, rgba(88,28,135,0.38)  0%, transparent 60%),
+      radial-gradient(ellipse 55% 50% at 15% 80%, rgba(147,51,234,0.13) 0%, transparent 50%),
+      radial-gradient(ellipse 45% 40% at 85% 65%, rgba(109,40,217,0.10) 0%, transparent 40%),
+      #0B0A1A;
+  }
+
+  /* Birthday sky — warmer, more vivid purple-rose glow */
+  html[data-theme="birthday"] .hero-sky {
+    background:
+      radial-gradient(ellipse 85% 65% at 50% 28%, rgba(147,51,234,0.52)  0%, transparent 58%),
+      radial-gradient(ellipse 55% 50% at 15% 75%, rgba(236,72,153,0.18)  0%, transparent 50%),
+      radial-gradient(ellipse 50% 42% at 85% 60%, rgba(167,139,250,0.16) 0%, transparent 40%),
+      #1A0030;
+  }
+
+  /* Thirteenth sky — deeper, more solemn indigo */
+  html[data-theme="thirteenth"] .hero-sky {
+    background:
+      radial-gradient(ellipse 85% 65% at 50% 30%, rgba(55,14,107,0.42)  0%, transparent 60%),
+      radial-gradient(ellipse 55% 50% at 15% 80%, rgba(88,28,135,0.10)  0%, transparent 50%),
+      radial-gradient(ellipse 45% 40% at 85% 65%, rgba(67,26,141,0.08)  0%, transparent 40%),
+      #050312;
+  }
+
+  /* ─── Quieter night-sky hero (for /world and /music) ──────────────────── */
+  .hero-sky-quiet {
+    background:
+      radial-gradient(ellipse 80% 60% at 50% 0%, rgba(88, 28, 135, 0.20) 0%, transparent 62%),
+      radial-gradient(ellipse 60% 50% at 78% 28%, rgba(147, 51, 234, 0.10) 0%, transparent 55%),
+      #0B0A1A;
+  }
+
+  /* ─── Subtle paper grain for cream pages ──────────────────────────────── */
+  .paper-grain::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+    opacity: 0.055;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    background-size: 180px 180px;
+  }
+
+  /* ─── Dark→cream scroll gradient (story section) ────────────────────────── */
+  .story-gradient {
+    background: linear-gradient(
+      to bottom,
+      #0B0A1A  0%,
+      #13072d 18%,
+      #2d1057 38%,
+      #7c3aed 56%,
+      #c084fc 70%,
+      #f3e8ff 83%,
+      #fef7ed 100%
+    );
+  }
+
+  html[data-theme="birthday"] .story-gradient {
+    background: linear-gradient(
+      to bottom,
+      #1A0030  0%,
+      #2e005a 20%,
+      #5b21b6 46%,
+      #c084fc 68%,
+      #f5d0fe 82%,
+      #fdf4ff 91%,
+      #fef7ed 100%
+    );
+  }
+
+  html[data-theme="thirteenth"] .story-gradient {
+    background: linear-gradient(
+      to bottom,
+      #050312  0%,
+      #0e0725 18%,
+      #1e0a4a 38%,
+      #5b21b6 58%,
+      #a78bfa 73%,
+      #ede9fe 86%,
+      #fef7ed 100%
+    );
+  }
 }

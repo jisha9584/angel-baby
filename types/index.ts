@@ -1,16 +1,17 @@
 export interface Memory {
-  id: string
-  name: string
-  message: string
+  id:         string
+  name:       string
+  message:    string
   image_url:  string | null
   voice_url:  string | null
   video_url:  string | null
   bouquet:    string[] | null
   created_at: string
+  deleted_at: string | null
 }
 
 export interface MemoryFormData {
-  name: string
+  name:   string
   message: string
   image?: File | null
   voice?: Blob | null
@@ -18,10 +19,30 @@ export interface MemoryFormData {
 }
 
 export interface Spark {
-  id: string
-  text: string
-  name: string | null
+  id:         string
+  text:       string
+  name:       string | null
   created_at: string
+  deleted_at: string | null
+}
+
+export interface Letter {
+  id:         string
+  name:       string
+  message:    string
+  bouquet:    string[] | null
+  created_at: string
+  deleted_at: string | null
+}
+
+export interface Song {
+  id:           string
+  title:        string
+  artist:       string
+  note:         string | null
+  submitted_by: string | null
+  created_at:   string
+  deleted_at:   string | null
 }
 
 export interface ActionResult {

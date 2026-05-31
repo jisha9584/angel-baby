@@ -22,6 +22,13 @@ export const memorialConfig = {
   // Replace with a Supabase public URL once you upload a portrait, or /filename.jpg for public folder
   heroImage: '/rudraksh.jpg',
 
+  // Paste the Spotify playlist embed URL here (Share → Embed → copy the src URL)
+  // Format: https://open.spotify.com/embed/playlist/PLAYLIST_ID?utm_source=generator
+  spotifyEmbedUrl: '',
+
+  // His clothing brand — shown on the /world page
+  afterwrldUrl: 'https://afterwrld.com',
+
   milestones: [
     {
       year: 'July 22, 2007',
@@ -35,7 +42,7 @@ export const memorialConfig = {
       title: 'Dubai to Canberra',
       description:
         'The family moved to Australia and he landed in Canberra. ' +
-        'New city, new school — and within weeks, somehow already the person everyone wanted to be around.',
+        'New city, new school, and within weeks somehow already the person everyone wanted to be around.',
     },
     {
       year: '2019',
