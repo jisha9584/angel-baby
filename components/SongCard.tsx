@@ -21,9 +21,11 @@ export default function SongCard({ song, index }: { song: Song; index: number })
         <p className="font-body text-sm text-warm-brown/75 mb-0.5 truncate">
           {song.title}
         </p>
-        <p className="font-display text-[8px] tracking-[0.2em] uppercase text-light-brown/50 truncate">
-          {song.artist}
-        </p>
+        {song.artist?.trim() && (
+          <p className="font-display text-[8px] tracking-[0.2em] uppercase text-light-brown/50 truncate">
+            {song.artist}
+          </p>
+        )}
         {song.note && (
           <p className="font-body text-xs text-light-brown/45 mt-3 italic leading-relaxed">
             &ldquo;{song.note}&rdquo;

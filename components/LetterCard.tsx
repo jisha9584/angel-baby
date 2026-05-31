@@ -21,9 +21,11 @@ export default function LetterCard({ letter, index }: { letter: Letter; index: n
     >
       <p className="font-handwriting text-xl text-warm-brown/45 mb-6">Dear Rudraksh,</p>
 
-      <p className="font-body text-sm text-warm-brown/65 leading-[1.9] whitespace-pre-wrap mb-10 max-w-prose">
-        {letter.message}
-      </p>
+      {letter.message?.trim() && (
+        <p className="font-body text-sm text-warm-brown/65 leading-[1.9] whitespace-pre-wrap mb-10 max-w-prose">
+          {letter.message}
+        </p>
+      )}
 
       {letter.bouquet && letter.bouquet.length > 0 && (
         <div className="mb-10 -ml-1">
@@ -33,7 +35,7 @@ export default function LetterCard({ letter, index }: { letter: Letter; index: n
 
       <div className="flex items-baseline justify-between">
         <p className="font-handwriting text-lg text-warm-brown/55">
-          with love, {letter.name}
+          with love, {letter.name?.trim() || 'someone who loved him'}
         </p>
         <p className="font-display text-[7px] tracking-[0.28em] uppercase text-light-brown/30">
           {formatDate(letter.created_at)}

@@ -60,7 +60,6 @@ export default function LetterForm() {
 
             <textarea
               name="message"
-              required
               placeholder="write whatever you need to say…"
               rows={9}
               maxLength={5000}
@@ -88,8 +87,7 @@ export default function LetterForm() {
                 <span className="font-handwriting text-lg text-light-brown/45">with love,</span>
                 <input
                   name="name"
-                  required
-                  placeholder="your name"
+                  placeholder="your name (optional)"
                   maxLength={80}
                   className="bg-transparent border-b border-warm-brown/15 outline-none font-handwriting text-lg text-warm-brown/80 placeholder:text-light-brown/30 pb-0.5 w-40"
                 />

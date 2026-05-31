@@ -64,11 +64,18 @@ export default function MemoryForm() {
     if (videoInputRef.current) videoInputRef.current.value = ''
   }
 
+  // Everything is optional — but we ask for at least *something* to remember by
+  // so the wall never fills with empty cards. The name can always be left off.
+  const hasContent =
+    !!message.trim() || !!imageFile || !!voiceBlob || !!videoFile || bouquet.length > 0
+
   function goToPreview(e: React.FormEvent) {
     e.preventDefault()
     setError(null)
-    if (!name.trim())    { setError('Please add your name.');   return }
-    if (!message.trim()) { setError('Please write something.'); return }
+    if (!hasContent) {
+      setError('Add a few words, a photo, a voice note, a video, or a bouquet.')
+      return
+    }
     if (message.length > 2000) { setError('Message is too long.'); return }
     setStep('preview')
   }
@@ -149,7 +156,7 @@ export default function MemoryForm() {
           }
         </motion.div>
         <h2 className="font-handwriting text-4xl text-warm-brown mb-3">
-          Thank you, {name}
+          {name.trim() ? `Thank you, ${name.trim()}` : 'Thank you'}
         </h2>
         <p className="font-body text-sm text-light-brown max-w-sm mx-auto leading-relaxed mb-10">
           {bouquet.length > 0
@@ -209,12 +216,16 @@ export default function MemoryForm() {
                   voice message included
                 </div>
               )}
-              <p className="font-body text-sm text-warm-brown/90 leading-relaxed line-clamp-4 mb-3">
-                {message}
-              </p>
+              {message.trim() && (
+                <p className="font-body text-sm text-warm-brown/90 leading-relaxed line-clamp-4 mb-3">
+                  {message}
+                </p>
+              )}
               <div className="flex items-center gap-1.5">
                 <Heart className="h-3 w-3 text-blush fill-blush" />
-                <span className="font-handwriting text-base text-light-brown">{name}</span>
+                <span className="font-handwriting text-base text-light-brown">
+                  {name.trim() || 'someone who loved him'}
+                </span>
               </div>
             </div>
           </div>
@@ -256,10 +267,13 @@ export default function MemoryForm() {
     >
       {/* Name */}
       <div className="space-y-2">
-        <Label htmlFor="name">Your name</Label>
+        <Label htmlFor="name">
+          Your name{' '}
+          <span className="text-light-brown/50 font-normal">(optional)</span>
+        </Label>
         <Input
           id="name"
-          placeholder="e.g. Sarah, or the whole friend group"
+          placeholder="e.g. Sarah, or leave it blank"
           value={name}
           onChange={(e) => setName(e.target.value)}
           maxLength={80}
@@ -270,7 +284,7 @@ export default function MemoryForm() {
       <div className="space-y-2">
         <Label htmlFor="message">
           Your memory{' '}
-          <span className="text-light-brown/50 font-normal">a story, a moment, a feeling</span>
+          <span className="text-light-brown/50 font-normal">a story, a moment, a feeling (optional)</span>
         </Label>
         <Textarea
           id="message"

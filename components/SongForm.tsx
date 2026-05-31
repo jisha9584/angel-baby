@@ -60,16 +60,14 @@ export default function SongForm() {
               <div className="flex gap-4">
                 <input
                   name="title"
-                  required
                   maxLength={120}
                   placeholder="song title"
                   className="flex-1 bg-transparent border-b border-warm-brown/15 focus:border-warm-brown/40 outline-none font-body text-sm text-warm-brown/80 placeholder:text-light-brown/30 pb-2 transition-colors"
                 />
                 <input
                   name="artist"
-                  required
                   maxLength={120}
-                  placeholder="artist"
+                  placeholder="artist (optional)"
                   className="flex-1 bg-transparent border-b border-warm-brown/15 focus:border-warm-brown/40 outline-none font-body text-sm text-warm-brown/80 placeholder:text-light-brown/30 pb-2 transition-colors"
                 />
               </div>

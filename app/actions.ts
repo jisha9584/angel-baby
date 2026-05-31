@@ -73,8 +73,8 @@ export async function createMemory(formData: FormData): Promise<ActionResult> {
     return { success: false, error: 'Database not configured yet. Add your Supabase keys to .env.local.' }
   }
 
-  const name       = (formData.get('name')    as string)?.trim()
-  const message    = (formData.get('message') as string)?.trim()
+  const name       = (formData.get('name')    as string)?.trim() || null
+  const message    = (formData.get('message') as string)?.trim() || null
   const bouquetRaw = (formData.get('bouquet') as string) || '[]'
   // Media is uploaded directly from the browser first (see createSignedUpload);
   // by the time we get here we only receive the resulting public URLs.
@@ -88,8 +88,13 @@ export async function createMemory(formData: FormData): Promise<ActionResult> {
     if (Array.isArray(parsed) && parsed.length > 0) bouquet = parsed.slice(0, 5)
   } catch { /* ignore malformed JSON */ }
 
-  if (!name || !message) return { success: false, error: 'Name and message are required.' }
-  if (message.length > 2000) return { success: false, error: 'Message is too long (max 2000 characters).' }
+  // Everything is optional so people can share however they're comfortable —
+  // we only ask that there's *something* to remember by (words, a photo, a
+  // voice note, a video, or a bouquet). The name can always be left off.
+  if (!message && !imageUrl && !voiceUrl && !videoUrl && !bouquet) {
+    return { success: false, error: 'Add a few words, a photo, a voice note, a video, or a bouquet.' }
+  }
+  if (message && message.length > 2000) return { success: false, error: 'Message is too long (max 2000 characters).' }
 
   const { error: insertError } = await supabase
     .from('memories')
@@ -165,18 +170,20 @@ export async function createLetter(formData: FormData): Promise<ActionResult> {
   const supabase = serverSupabase()
   if (!supabase) return { success: false, error: 'Database not configured yet.' }
 
-  const name       = (formData.get('name')    as string)?.trim()
-  const message    = (formData.get('message') as string)?.trim()
+  const name       = (formData.get('name')    as string)?.trim() || null
+  const message    = (formData.get('message') as string)?.trim() || null
   const bouquetRaw  = (formData.get('bouquet') as string) || '[]'
-
-  if (!name || !message) return { success: false, error: 'Please fill in your name and letter.' }
-  if (message.length > 5000) return { success: false, error: 'Letter is too long (max 5000 characters).' }
 
   let bouquet: string[] | null = null
   try {
     const parsed = JSON.parse(bouquetRaw)
     if (Array.isArray(parsed) && parsed.length > 0) bouquet = parsed.slice(0, 5)
   } catch { /* ignore malformed JSON */ }
+
+  // The name is always optional. We only ask for a letter or a bouquet so the
+  // page never fills with empty entries.
+  if (!message && !bouquet) return { success: false, error: 'Write a few words or leave a bouquet.' }
+  if (message && message.length > 5000) return { success: false, error: 'Letter is too long (max 5000 characters).' }
 
   let { error } = await supabase.from('letters').insert({ name, message, bouquet })
   // Gracefully handle databases that don't have the bouquet column yet —
@@ -215,12 +222,13 @@ export async function createSong(formData: FormData): Promise<ActionResult> {
   const supabase = serverSupabase()
   if (!supabase) return { success: false, error: 'Database not configured yet.' }
 
-  const title        = (formData.get('title')        as string)?.trim()
-  const artist       = (formData.get('artist')       as string)?.trim()
+  const title        = (formData.get('title')        as string)?.trim() || null
+  const artist       = (formData.get('artist')       as string)?.trim() || null
   const note         = (formData.get('note')         as string)?.trim() || null
   const submitted_by = (formData.get('submitted_by') as string)?.trim() || null
 
-  if (!title || !artist) return { success: false, error: 'Please provide the song title and artist.' }
+  // Only the song title is needed — the artist and the rest are optional.
+  if (!title) return { success: false, error: 'Please add the song title.' }
 
   const { error } = await supabase.from('songs').insert({ title, artist, note, submitted_by })
   if (error) { console.error('createSong:', error); return { success: false, error: 'Something went wrong. Please try again.' } }

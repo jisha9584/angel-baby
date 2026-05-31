@@ -19,6 +19,7 @@ export default function MemoryCard({ memory, index = 0 }: Props) {
   const rotation = stableRotation(memory.id)
 
   const hasBouquet = memory.bouquet && memory.bouquet.length > 0
+  const displayName = memory.name?.trim() || 'someone who loved him'
 
   return (
     <>
@@ -34,7 +35,7 @@ export default function MemoryCard({ memory, index = 0 }: Props) {
           onClick={() => setOpen(true)}
           style={{ transform: `rotate(${rotation}deg)` }}
           className="flex-1 text-left cursor-pointer group focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400 rounded-2xl"
-          aria-label={`Memory from ${memory.name}`}
+          aria-label={`Memory from ${displayName}`}
         >
         <div className="bg-card-bg rounded-2xl shadow-polaroid overflow-hidden transition-shadow duration-300 group-hover:shadow-hover">
 
@@ -53,7 +54,7 @@ export default function MemoryCard({ memory, index = 0 }: Props) {
           {!memory.video_url && memory.image_url && (
             <AutoImage
               src={memory.image_url}
-              alt={`Photo from ${memory.name}`}
+              alt={`Photo from ${displayName}`}
               sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
               imgClassName="transition-transform duration-500 group-hover:scale-105"
             />
@@ -71,14 +72,16 @@ export default function MemoryCard({ memory, index = 0 }: Props) {
               </div>
             )}
 
-            <p className="font-body text-sm text-warm-brown/85 leading-relaxed line-clamp-4 mb-3">
-              {memory.message}
-            </p>
+            {memory.message?.trim() && (
+              <p className="font-body text-sm text-warm-brown/85 leading-relaxed line-clamp-4 mb-3">
+                {memory.message}
+              </p>
+            )}
 
             <div className="flex items-center justify-between gap-2">
               <div className="flex items-center gap-1.5 min-w-0">
                 <Heart className="h-3 w-3 text-blush fill-blush flex-shrink-0" aria-hidden="true" />
-                <span className="font-handwriting text-base text-light-brown truncate">{memory.name}</span>
+                <span className="font-handwriting text-base text-light-brown truncate">{displayName}</span>
               </div>
               <span className="font-display text-[8px] tracking-[0.15em] uppercase text-light-brown/40 flex-shrink-0">
                 {relativeDate(memory.created_at)}
@@ -107,7 +110,7 @@ export default function MemoryCard({ memory, index = 0 }: Props) {
           {!memory.video_url && memory.image_url && (
             <AutoImage
               src={memory.image_url}
-              alt={`Photo from ${memory.name}`}
+              alt={`Photo from ${displayName}`}
               sizes="576px"
               fit="contain"
               maxHeight="70vh"
@@ -123,15 +126,17 @@ export default function MemoryCard({ memory, index = 0 }: Props) {
               )}
               <DialogTitle className="flex items-center gap-2">
                 <Heart className="h-4 w-4 text-blush fill-blush" aria-hidden="true" />
-                {memory.name}
+                {displayName}
               </DialogTitle>
             </DialogHeader>
 
             {memory.voice_url && <AudioPlayer url={memory.voice_url} compact />}
 
-            <p className="font-body text-[15px] text-warm-brown/90 leading-relaxed whitespace-pre-wrap">
-              {memory.message}
-            </p>
+            {memory.message?.trim() && (
+              <p className="font-body text-[15px] text-warm-brown/90 leading-relaxed whitespace-pre-wrap">
+                {memory.message}
+              </p>
+            )}
 
             {hasBouquet && (
               <div className="flex flex-col items-center gap-2 py-2">
