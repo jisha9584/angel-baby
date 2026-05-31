@@ -28,14 +28,14 @@ export default function MemoryCard({ memory, index = 0 }: Props) {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.45, delay: Math.min(index * 0.06, 0.5), ease: 'easeOut' }}
-        className="flex items-start gap-2"
+        className="relative"
       >
         <motion.button
           whileHover={{ scale: 1.025, rotate: rotation * 0.25, y: -4 }}
           whileTap={{ scale: 0.98 }}
           onClick={() => setOpen(true)}
           style={{ transform: `rotate(${rotation}deg)` }}
-          className="flex-1 text-left cursor-pointer group focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400 rounded-2xl"
+          className="block w-full text-left cursor-pointer group focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400 rounded-2xl"
           aria-label={`Memory from ${displayName}`}
         >
         <div className="bg-card-bg rounded-2xl shadow-polaroid overflow-hidden transition-shadow duration-300 group-hover:shadow-hover">
@@ -98,8 +98,11 @@ export default function MemoryCard({ memory, index = 0 }: Props) {
         </div>
         </motion.button>
 
+        {/* Bouquet nestles just under its own card, tucked to one side, so it
+            always reads as belonging to this memory instead of floating in the
+            gap between columns. */}
         {hasBouquet && (
-          <div className="-rotate-3 flex-shrink-0 self-end mb-2">
+          <div className="-mt-3 ml-5 -rotate-6 origin-top-left pointer-events-none">
             <BouquetDisplay flowerIds={memory.bouquet!} size="sm" animate={false} />
           </div>
         )}
