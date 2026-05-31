@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import Image from 'next/image'
 import { motion } from 'framer-motion'
 import { Heart, Mic, Video } from 'lucide-react'
 import {
@@ -52,12 +53,18 @@ export default function MemoryCard({ memory, index = 0 }: Props) {
           )}
 
           {!memory.video_url && memory.image_url && (
-            <AutoImage
-              src={memory.image_url}
-              alt={`Photo from ${displayName}`}
-              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-              imgClassName="transition-transform duration-500 group-hover:scale-105"
-            />
+            // Fixed shape on the wall so the card never resizes once the photo
+            // loads (no more reshuffling). The full, uncropped photo still
+            // shows in its natural orientation in the dialog below.
+            <div className="relative w-full aspect-[4/5] bg-warm-yellow/10 overflow-hidden">
+              <Image
+                src={memory.image_url}
+                alt={`Photo from ${displayName}`}
+                fill
+                sizes="(max-width: 640px) 50vw, (max-width: 1280px) 33vw, 25vw"
+                className="object-cover transition-transform duration-500 group-hover:scale-105"
+              />
+            </div>
           )}
 
           {!memory.video_url && !memory.image_url && (
