@@ -1,5 +1,6 @@
 'use client'
 
+import { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
 import { Leaf } from 'lucide-react'
 import MemoryCard from './MemoryCard'
@@ -52,12 +53,31 @@ function EmptyState() {
   )
 }
 
+function columnsFor(width: number) {
+  if (width >= 1280) return 4
+  if (width >= 1024) return 3
+  if (width >= 640)  return 2
+  return 1
+}
+
 interface MemoryWallProps {
   memories: Memory[]
   loading?: boolean
 }
 
 export default function MemoryWall({ memories, loading = false }: MemoryWallProps) {
+  // Until we've measured the viewport on the client we render the plain CSS
+  // flow (which matches the server render, so there's no hydration mismatch).
+  // Once mounted we switch to fixed JS columns — see below.
+  const [columnCount, setColumnCount] = useState<number | null>(null)
+
+  useEffect(() => {
+    const update = () => setColumnCount(columnsFor(window.innerWidth))
+    update()
+    window.addEventListener('resize', update)
+    return () => window.removeEventListener('resize', update)
+  }, [])
+
   if (loading) {
     return (
       <div className="masonry">
@@ -67,11 +87,36 @@ export default function MemoryWall({ memories, loading = false }: MemoryWallProp
   }
   if (memories.length === 0) return <EmptyState />
 
+  // First paint (server + pre-mount): a simple column-flow that's stable to
+  // hydrate. This happens before any photo has loaded, so nothing reflows yet.
+  if (columnCount === null) {
+    return (
+      <div className="masonry">
+        {memories.map((memory, index) => (
+          <div key={memory.id} className="masonry-item">
+            <MemoryCard memory={memory} index={index} />
+          </div>
+        ))}
+      </div>
+    )
+  }
+
+  // Fixed columns: each card is permanently assigned to one column, so a photo
+  // loading and changing height only nudges the cards beneath it in the same
+  // column. Cards never jump between columns the way CSS `columns` rebalances.
+  const columns: { memory: Memory; index: number }[][] =
+    Array.from({ length: columnCount }, () => [])
+  memories.forEach((memory, index) => {
+    columns[index % columnCount].push({ memory, index })
+  })
+
   return (
-    <div className="masonry">
-      {memories.map((memory, index) => (
-        <div key={memory.id} className="masonry-item">
-          <MemoryCard memory={memory} index={index} />
+    <div className="flex items-start gap-6">
+      {columns.map((column, ci) => (
+        <div key={ci} className="flex-1 min-w-0 flex flex-col gap-6">
+          {column.map(({ memory, index }) => (
+            <MemoryCard key={memory.id} memory={memory} index={index} />
+          ))}
         </div>
       ))}
     </div>

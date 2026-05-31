@@ -35,7 +35,7 @@ export default function LetterCard({ letter, index }: { letter: Letter; index: n
 
       <div className="flex items-baseline justify-between">
         <p className="font-handwriting text-lg text-warm-brown/55">
-          with love, {letter.name?.trim() || 'someone who loved him'}
+          with love, {letter.name?.trim() || 'someone who will always love him'}
         </p>
         <p className="font-display text-[7px] tracking-[0.28em] uppercase text-light-brown/30">
           {formatDate(letter.created_at)}

@@ -224,7 +224,7 @@ export default function MemoryForm() {
               <div className="flex items-center gap-1.5">
                 <Heart className="h-3 w-3 text-blush fill-blush" />
                 <span className="font-handwriting text-base text-light-brown">
-                  {name.trim() || 'someone who loved him'}
+                  {name.trim() || 'someone who will always love him'}
                 </span>
               </div>
             </div>

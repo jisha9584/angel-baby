@@ -19,7 +19,7 @@ export default function MemoryCard({ memory, index = 0 }: Props) {
   const rotation = stableRotation(memory.id)
 
   const hasBouquet = memory.bouquet && memory.bouquet.length > 0
-  const displayName = memory.name?.trim() || 'someone who loved him'
+  const displayName = memory.name?.trim() || 'someone who will always love him'
 
   return (
     <>
