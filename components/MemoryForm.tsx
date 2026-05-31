@@ -1,7 +1,6 @@
 'use client'
 
 import { useState, useRef, useTransition } from 'react'
-import Image from 'next/image'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Upload, X, Eye, Send, CheckCircle2, Heart, Video, Mic } from 'lucide-react'
 import { Button }          from '@/components/ui/button'
@@ -9,6 +8,7 @@ import { Input }           from '@/components/ui/input'
 import { Label }           from '@/components/ui/label'
 import { Textarea }        from '@/components/ui/textarea'
 import VoiceRecorder       from '@/components/VoiceRecorder'
+import AutoImage           from '@/components/AutoImage'
 import FlowerPicker        from '@/components/FlowerPicker'
 import BouquetDisplay      from '@/components/BouquetDisplay'
 import { createMemory, createSignedUpload } from '@/app/actions'
@@ -192,9 +192,7 @@ export default function MemoryForm() {
               <video src={videoPreview} className="w-full aspect-video object-cover" controls />
             )}
             {!videoPreview && imagePreview && (
-              <div className="relative w-full aspect-[4/3]">
-                <Image src={imagePreview} alt="Your photo" fill className="object-cover" />
-              </div>
+              <AutoImage src={imagePreview} alt="Your photo" />
             )}
             {!videoPreview && !imagePreview && (
               <div className="h-2 bg-gradient-to-r from-warm-yellow/60 via-soft-blue/40 to-mint-green/50" />
@@ -327,10 +325,17 @@ export default function MemoryForm() {
           {mediaTab === 'photo' && (
             <motion.div key="photo" initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -6 }} transition={{ duration: 0.2 }}>
               {imagePreview ? (
-                <div className="relative rounded-2xl overflow-hidden aspect-video bg-warm-yellow/10">
-                  <Image src={imagePreview} alt="Selected photo" fill className="object-cover" />
+                <div className="relative">
+                  <AutoImage
+                    src={imagePreview}
+                    alt="Selected photo"
+                    fit="contain"
+                    maxHeight="22rem"
+                    bg="bg-warm-yellow/10"
+                    className="rounded-2xl"
+                  />
                   <button type="button" onClick={clearImage}
-                    className="absolute top-2 right-2 w-8 h-8 rounded-full bg-warm-brown/50 text-white flex items-center justify-center hover:bg-warm-brown transition-colors"
+                    className="absolute top-2 right-2 w-8 h-8 rounded-full bg-warm-brown/50 text-white flex items-center justify-center hover:bg-warm-brown transition-colors z-10"
                     aria-label="Remove photo">
                     <X className="h-4 w-4" />
                   </button>

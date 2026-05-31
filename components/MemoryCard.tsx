@@ -1,13 +1,13 @@
 'use client'
 
 import { useState } from 'react'
-import Image from 'next/image'
 import { motion } from 'framer-motion'
 import { Heart, Mic, Video } from 'lucide-react'
 import {
   Dialog, DialogContent, DialogHeader, DialogTitle,
 } from '@/components/ui/dialog'
 import AudioPlayer from '@/components/AudioPlayer'
+import AutoImage from '@/components/AutoImage'
 import BouquetDisplay from '@/components/BouquetDisplay'
 import { stableRotation, relativeDate } from '@/lib/utils'
 import type { Memory } from '@/types'
@@ -51,15 +51,12 @@ export default function MemoryCard({ memory, index = 0 }: Props) {
           )}
 
           {!memory.video_url && memory.image_url && (
-            <div className="relative w-full aspect-[4/3] bg-warm-yellow/10 overflow-hidden">
-              <Image
-                src={memory.image_url}
-                alt={`Photo from ${memory.name}`}
-                fill
-                className="object-cover transition-transform duration-500 group-hover:scale-105"
-                sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-              />
-            </div>
+            <AutoImage
+              src={memory.image_url}
+              alt={`Photo from ${memory.name}`}
+              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+              imgClassName="transition-transform duration-500 group-hover:scale-105"
+            />
           )}
 
           {!memory.video_url && !memory.image_url && (
@@ -108,15 +105,15 @@ export default function MemoryCard({ memory, index = 0 }: Props) {
           )}
 
           {!memory.video_url && memory.image_url && (
-            <div className="relative w-full aspect-video rounded-t-3xl overflow-hidden bg-warm-yellow/10">
-              <Image
-                src={memory.image_url}
-                alt={`Photo from ${memory.name}`}
-                fill
-                className="object-cover"
-                sizes="576px"
-              />
-            </div>
+            <AutoImage
+              src={memory.image_url}
+              alt={`Photo from ${memory.name}`}
+              sizes="576px"
+              fit="contain"
+              maxHeight="70vh"
+              bg="bg-warm-brown/5"
+              className="rounded-t-3xl"
+            />
           )}
 
           <div className="px-6 pt-4 pb-6 space-y-4">
