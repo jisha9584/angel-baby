@@ -5,8 +5,9 @@
 -- like in the Supabase SQL editor (Dashboard -> SQL Editor -> New query).
 --
 -- All app reads/writes go through server actions using the SERVICE ROLE key,
--- which bypasses Row Level Security, so these tables intentionally do not need
--- RLS policies for the app to work.
+-- which bypasses Row Level Security. We therefore ENABLE RLS on every table but
+-- add NO policies: this locks out the public anon key entirely (it ships in the
+-- browser) while the server keeps full access. Best of both worlds.
 
 create extension if not exists "pgcrypto";
 
@@ -24,6 +25,7 @@ create table if not exists public.memories (
 );
 -- in case the table already existed from an earlier deploy
 alter table public.memories add column if not exists bouquet jsonb;
+alter table public.memories enable row level security;
 
 -- ── sparks (quick words) ──────────────────────────────────────────────────
 create table if not exists public.sparks (
@@ -33,6 +35,7 @@ create table if not exists public.sparks (
   created_at  timestamptz not null default now(),
   deleted_at  timestamptz
 );
+alter table public.sparks enable row level security;
 
 -- ── letters ───────────────────────────────────────────────────────────────
 create table if not exists public.letters (
@@ -45,6 +48,7 @@ create table if not exists public.letters (
 );
 -- the column the bouquet picker on /letters writes into
 alter table public.letters add column if not exists bouquet jsonb;
+alter table public.letters enable row level security;
 
 -- ── songs (shared playlist) ───────────────────────────────────────────────
 create table if not exists public.songs (
@@ -56,6 +60,7 @@ create table if not exists public.songs (
   created_at    timestamptz not null default now(),
   deleted_at    timestamptz
 );
+alter table public.songs enable row level security;
 
 -- ── storage bucket for photos / voice / video ─────────────────────────────
 -- prefixed paths used by the app: photos/  voice/  videos/

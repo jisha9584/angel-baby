@@ -11,7 +11,8 @@ import { Textarea }        from '@/components/ui/textarea'
 import VoiceRecorder       from '@/components/VoiceRecorder'
 import FlowerPicker        from '@/components/FlowerPicker'
 import BouquetDisplay      from '@/components/BouquetDisplay'
-import { createMemory }    from '@/app/actions'
+import { createMemory, createSignedUpload } from '@/app/actions'
+import { supabase }        from '@/lib/supabase'
 import { memorialConfig }  from '@/config/memorial'
 
 type Step     = 'form' | 'preview' | 'success'
@@ -72,23 +73,51 @@ export default function MemoryForm() {
     setStep('preview')
   }
 
-  function submit() {
-    const fd = new FormData()
-    fd.append('name',    name.trim())
-    fd.append('message', message.trim())
-    fd.append('bouquet', JSON.stringify(bouquet))
-    if (imageFile) fd.append('image', imageFile)
-    if (voiceBlob) fd.append('voice', voiceBlob, 'voice-message.webm')
-    if (videoFile) fd.append('video', videoFile)
+  // Upload one file straight from the browser to Supabase storage, using a
+  // one-time signed URL the server hands us. This bypasses Vercel's ~4.5 MB
+  // request-body limit, so photos, voice notes, and videos up to 50 MB work.
+  async function uploadDirect(kind: 'photo' | 'voice' | 'video', file: Blob, filename: string): Promise<string> {
+    const signed = await createSignedUpload(kind, filename)
+    if (!signed.success) throw new Error(signed.error)
+    const { error: upErr } = await supabase.storage
+      .from('memory-images')
+      .uploadToSignedUrl(signed.path, signed.token, file, { contentType: file.type || undefined })
+    if (upErr) throw new Error(upErr.message)
+    return signed.publicUrl
+  }
 
+  function submit() {
+    setError(null)
     startTransition(async () => {
-      const result = await createMemory(fd)
-      if (result.success) {
-        setStep('success')
-        if (imagePreview) URL.revokeObjectURL(imagePreview)
-        if (videoPreview) URL.revokeObjectURL(videoPreview)
-      } else {
-        setError(result.error ?? 'Something went wrong. Please try again.')
+      try {
+        let imageUrl: string | null = null
+        let voiceUrl: string | null = null
+        let videoUrl: string | null = null
+
+        if (imageFile) imageUrl = await uploadDirect('photo', imageFile, imageFile.name)
+        if (voiceBlob) voiceUrl = await uploadDirect('voice', voiceBlob, 'voice-message.webm')
+        if (videoFile) videoUrl = await uploadDirect('video', videoFile, videoFile.name)
+
+        const fd = new FormData()
+        fd.append('name',    name.trim())
+        fd.append('message', message.trim())
+        fd.append('bouquet', JSON.stringify(bouquet))
+        if (imageUrl) fd.append('image_url', imageUrl)
+        if (voiceUrl) fd.append('voice_url', voiceUrl)
+        if (videoUrl) fd.append('video_url', videoUrl)
+
+        const result = await createMemory(fd)
+        if (result.success) {
+          setStep('success')
+          if (imagePreview) URL.revokeObjectURL(imagePreview)
+          if (videoPreview) URL.revokeObjectURL(videoPreview)
+        } else {
+          setError(result.error ?? 'Something went wrong. Please try again.')
+          setStep('form')
+        }
+      } catch (e) {
+        console.error('submit:', e)
+        setError('Something went wrong sending your memory. Please try again.')
         setStep('form')
       }
     })

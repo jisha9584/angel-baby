@@ -36,3 +36,6 @@ next-env.d.ts
 
 # ─── Claude Code local tooling ───────────────────────────────────────────────
 .claude/
+
+# Local memorial backups (letters, photos, voice, video) — keep off GitHub
+backups/
